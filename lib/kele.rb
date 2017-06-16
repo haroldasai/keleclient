@@ -1,4 +1,5 @@
 require 'httparty'
+require 'json'
 
 class Kele
   include HTTParty	
@@ -18,9 +19,21 @@ class Kele
   	response = self.class.post('/sessions', options)
   	@auth_token = response["auth_token"]
   	unless @auth_token.nil?
-  	  'Authentication succeeded'
+  	  puts 'Authentication succeeded'
   	else
-  	  response["message"]
+  	  puts response["message"]
   	end  
-  end	
+  end
+
+  def get_me
+  	authenticate
+  	unless @auth_token.nil?
+  	  puts 'Retrieving user information'
+  	  response = self.class.get('/users/me', headers: { "authorization" => @auth_token })
+      JSON.parse(response.body)
+  	else
+  	  puts 'Unable to retrieve user information'	
+  	end
+    
+  end  
 end  	
