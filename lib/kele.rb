@@ -32,8 +32,22 @@ class Kele
   	  response = self.class.get('/users/me', headers: { "authorization" => @auth_token })
       JSON.parse(response.body)
   	else
-  	  puts 'Unable to retrieve user information'	
+  	  puts 'Unable to retrieve user information'
   	end
-    
-  end  
+  end
+  
+  def get_mentor_availability(mentor_id)
+    authenticate
+  	unless @auth_token.nil?
+  	  puts 'Retrieving user information'
+  	  response = self.class.get("/mentors/#{mentor_id}/student_availability", headers: { "authorization" => @auth_token }, body: {})
+      schedule_array = JSON.parse(response.body)
+      schedule_array.map! {
+        |n| next if n["booked"] == true
+        n
+      }
+  	else
+  	  puts 'Unable to retrieve mentor schedule'
+  	end  
+  end	
 end  	
