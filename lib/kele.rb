@@ -79,4 +79,18 @@ class Kele
     end
   end
 
+  def create_submission(checkpoint_id, assignment_branch, assignment_commit_link, comment)
+    authenticate
+    unless @auth_token.nil?
+      puts 'Creating a submission'
+      response = self.class.post('/checkpoint_submissions', headers: { "authorization" => @auth_token }, body: { "assignment_branch": assignment_branch,
+    "assignment_commit_link": assignment_commit_link,
+    "checkpoint_id": checkpoint_id,
+    "comment": comment,
+    "enrollment_id": get_me["current_enrollment"]["id"],  })
+      response.response
+    else
+      puts 'Unable to create submission'
+    end
+  end
 end  	
