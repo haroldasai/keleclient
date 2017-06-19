@@ -51,5 +51,32 @@ class Kele
   	else
   	  puts 'Unable to retrieve mentor schedule'
   	end  
-  end	
+  end
+
+  def get_messages(page_num = nil)
+    authenticate
+    unless @auth_token.nil?
+      puts 'Retrieving user information'
+      if page_num.nil?
+        response = self.class.get('/message_threads', headers: { "authorization" => @auth_token }, body: {})
+      else 
+        response = self.class.get('/message_threads', headers: { "authorization" => @auth_token }, body: { "page": page_num })
+      end
+      JSON.parse(response.body)    
+    else
+      puts 'Unable to retrieve user messages'
+    end
+  end
+
+  def create_messages(sender, recipient_id, subject, message)
+    authenticate
+    unless @auth_token.nil?
+      puts 'Creating a message'
+      response = self.class.post('/messages', headers: { "authorization" => @auth_token }, body: { "sender": sender, "recipient_id": recipient_id, "subject": subject, "stripped-text": message })
+      response.response
+    else
+      puts 'Unable to create a message'
+    end
+  end
+
 end  	
