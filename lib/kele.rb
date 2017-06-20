@@ -73,7 +73,8 @@ class Kele
     unless @auth_token.nil?
       puts 'Creating a message'
       response = self.class.post('/messages', headers: { "authorization" => @auth_token }, body: { "sender": sender, "recipient_id": recipient_id, "subject": subject, "stripped-text": message })
-      response.response
+      puts response.response
+      response
     else
       puts 'Unable to create a message'
     end
@@ -88,7 +89,24 @@ class Kele
     "checkpoint_id": checkpoint_id,
     "comment": comment,
     "enrollment_id": get_me["current_enrollment"]["id"],  })
-      response.response
+      puts response.response
+      response
+    else
+      puts 'Unable to create submission'
+    end
+  end
+
+  def update_submission(checkpoint_id, assignment_branch, assignment_commit_link, comment, submission_id)
+    authenticate
+    unless @auth_token.nil?
+      puts 'Updating submission'
+      response = self.class.put("/checkpoint_submissions/#{submission_id}", headers: { "authorization" => @auth_token }, body: { "assignment_branch": assignment_branch,
+    "assignment_commit_link": assignment_commit_link,
+    "checkpoint_id": checkpoint_id,
+    "comment": comment,
+    "enrollment_id": get_me["current_enrollment"]["id"],  })
+      puts response.response
+      response
     else
       puts 'Unable to create submission'
     end
